@@ -1,0 +1,28 @@
+name: Check application
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: node --test tests/core.test.cjs
+      - run: python tools/build_sw.py && git diff --exit-code -- sw.js report-css.js
+      - run: pip install playwright==1.58.0
+      - run: python -m playwright install --with-deps chromium
+      - name: Browser flows and storage failures
+        run: |
+          python -m http.server 8040 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE/.." > /tmp/em-prikorm-server.log 2>&1 &
+          export APP_URL="http://127.0.0.1:8040/$(basename "$GITHUB_WORKSPACE")/"
+          export CHROMIUM_PATH="$(python -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
+          python tests/browser_flows.py
+          python tests/browser_edges.py

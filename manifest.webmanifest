@@ -1,0 +1,26 @@
+{
+  "id": "/em-prikorm/",
+  "name": "ЕмПрикорм",
+  "short_name": "ЕмПрикорм",
+  "lang": "ru",
+  "description": "Дневник прикорма: продукты, наблюдения и отчёт для врача",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffaf1",
+  "theme_color": "#fffaf1",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-original.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

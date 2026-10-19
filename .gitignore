@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.DS_Store
+em-prikorm-backup-*.json
+em-prikorm-recovery-*.json
+em-prikorm-report-*.html
