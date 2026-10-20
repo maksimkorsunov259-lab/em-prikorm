@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: node --test tests/core.test.cjs
+      - run: node --test tests/*.test.cjs
       - run: python tools/build_sw.py && git diff --exit-code -- sw.js report-css.js
       - run: pip install playwright==1.58.0
       - run: python -m playwright install --with-deps chromium
@@ -27,3 +27,4 @@ jobs:
           python tests/browser_flows.py
           python tests/browser_edges.py
           python tests/browser_updates.py
+          python tests/browser_nutrition_install.py
