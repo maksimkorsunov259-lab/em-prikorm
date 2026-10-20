@@ -32,8 +32,9 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  p.evaluate("render('foods')");assert p.locator('.food-row').count()==187;p.wait_for_function('Array.from(document.querySelectorAll(".food-art")).every(i=>i.complete&&i.naturalWidth>0)')
  p.evaluate("render('nutrition')");text=p.locator('#screen').inner_text();assert 'Responsive feeding' not in text;assert 'Кормление с вниманием к сигналам ребёнка' in text;assert 'необходимость обследования на дефицит железа' in text
  p.evaluate("render('safe')");text=p.locator('#screen').inner_text();assert 'Нежелательные и запрещённые продукты' in text and 'Грибы не включайте' in text and 'не обязательный пункт меню' in text
- p.evaluate("render('observation')");text=p.locator('#screen').inner_text();assert 'многодневных пауз' in text and '3–5 дней' in text and 'интервал 3 дня' in text and 'не срок, который гарантирует' in text
+ p.evaluate("render('observation')");text=p.locator('#screen').inner_text();assert 'многодневных пауз' in text and '3–5 дней' in text and 'В практике автора приложения' not in text
  p.evaluate("render('today')");assert p.locator('.hero [data-app-icon]').count()==0;assert p.locator('.app-logo').count()==1
+ p.evaluate("render('readiness')");p.locator('#choking-help summary').click();assert 'Раздел дополнится видео об оказании помощи от автора приложения.' in p.locator('#choking-help').inner_text();assert p.locator('#choking-help a[href="tel:112"]').count()==1
  # Author block is consistent across screens and adapts to narrow phones.
  for width in [320,390,768,1440]:
   p.set_viewport_size({'width':width,'height':900})
