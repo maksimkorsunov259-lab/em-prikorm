@@ -3,3 +3,7 @@ body{background:#f8f5ed}.layout{display:block;max-width:600px;padding:20px 12px;
 @media(max-width:600px){.layout{padding:0}.device{border:0;border-radius:0;box-shadow:none}.screen{padding-bottom:24px}}
 @media print{.layout{max-width:none;padding:0}.device{border:0}#storage-status,#storage-error{display:none!important}.screen{padding:0}}
 .screen h1,.screen h2,.screen h3,.screen p,.report-area td,.report-area th{overflow-wrap:anywhere}.report-area table{table-layout:fixed}.report-area th:first-child{width:40%}.report-area th:nth-child(2){width:27%}
+
+.update-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;background:#f1f5e7;border-bottom:1px solid var(--line);color:var(--ink)}.update-banner strong{font-size:15px}.update-banner p{font-size:13px;line-height:1.4;margin:5px 0 0}.update-banner button{flex-shrink:0;min-height:44px;padding:9px 12px;font-size:16px;line-height:1.5;font-weight:400;border-radius:12px}
+@media(max-width:600px){.update-banner{align-items:stretch;flex-direction:column;padding:12px 14px}.update-banner button{width:100%}}
+@media print{.update-banner{display:none!important}}

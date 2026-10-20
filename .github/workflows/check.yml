@@ -26,3 +26,4 @@ jobs:
           export CHROMIUM_PATH="$(python -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
           python tests/browser_flows.py
           python tests/browser_edges.py
+          python tests/browser_updates.py
