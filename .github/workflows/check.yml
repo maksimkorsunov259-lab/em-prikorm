@@ -28,3 +28,4 @@ jobs:
           python tests/browser_edges.py
           python tests/browser_updates.py
           python tests/browser_nutrition_install.py
+          python tests/browser_content_profile.py

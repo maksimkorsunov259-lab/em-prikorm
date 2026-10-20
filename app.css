@@ -7,3 +7,19 @@ body{background:#f8f5ed}.layout{display:block;max-width:600px;padding:20px 12px;
 .update-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;background:#f1f5e7;border-bottom:1px solid var(--line);color:var(--ink)}.update-banner strong{font-size:15px}.update-banner p{font-size:13px;line-height:1.4;margin:5px 0 0}.update-banner button{flex-shrink:0;min-height:44px;padding:9px 12px;font-size:16px;line-height:1.5;font-weight:400;border-radius:12px}
 @media(max-width:600px){.update-banner{align-items:stretch;flex-direction:column;padding:12px 14px}.update-banner button{width:100%}}
 @media print{.update-banner{display:none!important}}
+/* Author block matches EmMoloko; retain this app's palette. */
+.layout .author-wrap{padding:0 24px}
+.layout .em-card.em-author{padding:18px;margin:16px 0 0;border-radius:20px}
+.layout .em-author-head{display:grid;grid-template-columns:82px minmax(0,1fr);gap:15px;align-items:center}
+.layout .em-card.em-author .em-author-photo{display:block;width:82px;height:106px;object-fit:cover;object-position:center 25%;border-radius:14px;background:#fff}
+.layout .em-author p{margin:5px 0}
+.layout .em-author h3{margin:0 0 5px}
+.layout .em-author .em-eyebrow{font-size:10px;line-height:1.5;margin:0 0 7px;letter-spacing:1px}
+.layout .em-author .em-note{font-size:13px;line-height:1.5}
+.layout .em-author .em-small{font-size:12px;line-height:1.5}
+.layout .em-author-qr{display:grid;grid-template-columns:112px minmax(0,1fr);gap:16px;align-items:center;margin-top:17px;padding-top:17px}
+.layout .em-author-qr img{display:block;width:112px;height:112px;border-radius:6px;background:#fff}
+.layout .em-author .em-support{margin-top:18px;padding-top:18px}
+.layout .em-author .em-support-link{display:inline-block;margin-top:8px;font-size:14px}
+@media(max-width:600px){.layout .author-wrap{padding:0 14px}}
+@media(max-width:380px){.layout .em-author-head{grid-template-columns:65px minmax(0,1fr);gap:12px}.layout .em-card.em-author .em-author-photo{width:65px;height:96px}.layout .em-author .em-eyebrow{letter-spacing:.5px}.layout .em-author-qr{grid-template-columns:94px minmax(0,1fr);gap:12px}.layout .em-author-qr img{width:94px;height:94px}}

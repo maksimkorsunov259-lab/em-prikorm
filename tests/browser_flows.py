@@ -10,7 +10,7 @@ def go(p,v):p.evaluate('(v)=>render(v)',v)
 def init(p):p.goto(URL);p.wait_for_function('!loading');saved(p)
 def profile(p,name,dob):
  p.locator('[name=name]').fill(name);p.locator('[name=dob]').fill(dob)
- for key in ['severeEczema','eggAllergy','peanutReaction','complex']:p.locator('[name='+key+']').select_option('no')
+ for key in ['severeEczema','eggAllergy','milkAllergy','peanutReaction','complex']:p.locator('[name='+key+']').select_option('no')
  p.locator('#patient-form [type=submit]').click();saved(p)
 with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
  c=pw.chromium.launch_persistent_context(str(Path(tmp)/'browser'),executable_path=os.environ.get('CHROMIUM_PATH','/usr/bin/chromium'),headless=True,args=['--no-sandbox'],viewport={'width':390,'height':844},accept_downloads=True,timezone_id='Europe/Moscow');p=c.new_page();errors=[];p.on('pageerror',lambda e:errors.append(str(e)));p.on('dialog',lambda d:d.accept());init(p)
@@ -51,9 +51,9 @@ with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
   p.set_viewport_size({'width':width,'height':900})
   for view in p.evaluate('Object.keys(screens)'):
    go(p,view);assert p.evaluate('view')==view;assert p.evaluate('Array.from(document.querySelectorAll("[data-go]")).every(b=>Object.hasOwn(screens,b.dataset.go))');assert not p.evaluate('document.documentElement.scrollWidth>innerWidth'),(width,view);assert p.locator('#author-slot img').count()==2
- go(p,'foods');assert p.locator('.food-row').count()==181;go(p,'allergens');assert p.locator('.allergen-group').count()==12
+ go(p,'foods');assert p.locator('.food-row').count()==187;go(p,'allergens');assert p.locator('.allergen-group').count()==12
  # Readiness and entire app shell survive offline reload, including catalogue.
- p.evaluate('dirty=false');p.wait_for_function('offlineReady');c.set_offline(True);p.reload();saved(p);go(p,'foods');p.wait_for_function('Array.from(document.querySelectorAll(".food-art")).every(i=>i.complete&&i.naturalWidth>0)');assert p.locator('.food-row').count()==181
+ p.evaluate('dirty=false');p.wait_for_function('offlineReady');c.set_offline(True);p.reload();saved(p);go(p,'foods');p.wait_for_function('Array.from(document.querySelectorAll(".food-art")).every(i=>i.complete&&i.naturalWidth>0)');assert p.locator('.food-row').count()==187
  c.set_offline(False)
  # Distinct installation identity and service-worker scope.
  manifest=p.evaluate("fetch('./manifest.webmanifest').then(r=>r.json())");assert manifest['id']=='/em-prikorm/';assert manifest['name']=='ЕмПрикорм';assert p.evaluate('navigator.serviceWorker.controller.scriptURL').endswith('/em-prikorm/sw.js')
