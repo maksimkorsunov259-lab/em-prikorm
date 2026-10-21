@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="robots" content="noindex"><title>Обновление ЕмПрикорм</title>
+<style>body{margin:0;background:#fcf8ef;color:#43382d;font:16px/1.55 system-ui,sans-serif}main{box-sizing:border-box;max-width:640px;margin:24px auto;padding:24px;background:#fff;border:1px solid #e9dfd0;border-radius:20px}header{display:flex;gap:16px;align-items:center}img{width:56px;height:56px;border-radius:16px}h1{font-size:26px;line-height:1.2}button,a{font:inherit}button{padding:12px 16px;min-height:44px;border-radius:12px;border:1px solid #426c26;background:#426c26;color:white;cursor:pointer}button:disabled{opacity:.55;cursor:default}a{color:#426c26}label{display:flex;gap:12px;margin:20px 0}input{width:22px;height:22px;flex-shrink:0}#status{background:#edf4e5;padding:16px;border-radius:12px}.note{color:#706557}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9e501b;outline-offset:3px}[hidden]{display:none!important}@media(max-width:680px){main{margin:12px;padding:20px}}</style>
+<script src="./update-check.js" defer></script><script src="./update-recovery.js" defer></script></head><body><main>
+<header><img src="./assets/icon-rounded-192.png" alt=""><h1>Обновление ЕмПрикорм</h1></header>
+<p>Эта страница помогает загрузить новую версию, если в дневнике не появляется кнопка обновления.</p>
+<p>Сначала сохраните незавершённые записи и закройте остальные вкладки и окна ЕмПрикорм, включая установленное приложение.</p>
+<p class="note">Дневники остаются на этом устройстве. Данные сайта удалять не нужно.</p>
+<p id="status" role="status" aria-live="polite">Проверяем обновление…</p>
+<button type="button" id="check">Проверить ещё раз</button>
+<label><input type="checkbox" id="saved">Незавершённые записи сохранены, другие окна ЕмПрикорм закрыты.</label>
+<button type="button" id="activate" disabled hidden>Установить обновление и открыть дневник</button>
+<p><a href="./" id="open">Вернуться в ЕмПрикорм</a></p>
+<p class="note">Страница обновления · версия 1.0.8</p>
+<p class="note">Если проверка не проходит, сохраните текст сообщения и сообщите автору.</p>
+<noscript>Для проверки обновления включите JavaScript в браузере.</noscript>
+</main></body></html>
