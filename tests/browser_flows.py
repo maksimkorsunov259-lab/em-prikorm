@@ -49,7 +49,7 @@ with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
  p.evaluate('dirty=false')
  for width in [320,390,768,1440]:
   p.set_viewport_size({'width':width,'height':900})
-  for view in p.evaluate('Object.keys(screens)'):
+  for view in p.evaluate("Object.keys(screens).filter(v=>v!=='about')"):
    go(p,view);assert p.evaluate('view')==view;assert p.evaluate('Array.from(document.querySelectorAll("[data-go]")).every(b=>Object.hasOwn(screens,b.dataset.go))');assert not p.evaluate('document.documentElement.scrollWidth>innerWidth'),(width,view);assert p.locator('#author-slot img').count()==2
  go(p,'foods');assert p.locator('.food-row').count()==187;go(p,'allergens');assert p.locator('.allergen-group').count()==12
  # Readiness and entire app shell survive offline reload, including catalogue.
@@ -59,5 +59,5 @@ with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
  manifest=p.evaluate("fetch('./manifest.webmanifest').then(r=>r.json())");assert manifest['id']=='/em-prikorm/';assert manifest['name']=='ЕмПрикорм';assert p.evaluate('navigator.serviceWorker.controller.scriptURL').endswith('/em-prikorm/sw.js')
  cdp=c.new_cdp_session(p);install=cdp.send('Page.getInstallabilityErrors');assert not install.get('installabilityErrors'),install
  assert not errors,errors
- print('PASS: persistence/reload, two patients, photos, readiness/plan/questions, backup merge/replace, invalid imports, report/PDF, deletion/link integrity, XSS escaping, triage before validation, 84 responsive screens, offline, manifest and Chromium installability.')
+ print('PASS: persistence/reload, two patients, photos, readiness/plan/questions, backup merge/replace, invalid imports, report/PDF, deletion/link integrity, XSS escaping, triage before validation, responsive screens at four widths, offline, manifest and Chromium installability.')
  c.close()

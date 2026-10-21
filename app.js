@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const SPEC=CLINICAL_SPEC, VERSION='1.0.6';let TODAY=PrikormModel.localDate();
+const SPEC=CLINICAL_SPEC, VERSION='1.0.7';let TODAY=PrikormModel.localDate();
 const rules=new Map(SPEC.rules.map(r=>[r.id,r]));
 const foods=FOOD_CATALOG;
 const foodGroups=[...new Set(foods.map(f=>f.group))];
@@ -121,3 +121,5 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||
 
 });
 window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+const aboutOverlay=FamilyAbout.create({root:document.querySelector('.device'),trigger:'[data-go="about"]',build(){const body=document.createElement('div');body.innerHTML=screens.about();body.querySelector('.back')?.remove();body.querySelector('.eyebrow')?.remove();const title=body.querySelector('h1');if(title){const name=document.createElement('h3');name.textContent=title.textContent;title.replaceWith(name);}body.append(document.querySelector('#author-template').content.cloneNode(true));return body;},activate:()=>applyIcon(),navigate(next){if(dirty&&!confirm('Форма ещё не сохранена. Перейти без сохранения?'))return;render(next);}});
