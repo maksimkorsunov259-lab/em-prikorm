@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const SPEC=CLINICAL_SPEC, VERSION='1.0.12';let TODAY=PrikormModel.localDate();
+const SPEC=CLINICAL_SPEC, VERSION='1.0.13';let TODAY=PrikormModel.localDate();
 const rules=new Map(SPEC.rules.map(r=>[r.id,r]));
 const foods=FOOD_CATALOG;
 const availableFoods=foods.filter(f=>!f.retired);
