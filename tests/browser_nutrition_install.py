@@ -6,7 +6,7 @@ URL=os.environ.get('APP_URL','http://127.0.0.1:8040/em-prikorm/')
 with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  c=pw.chromium.launch_persistent_context(tmp,executable_path=os.environ.get('CHROMIUM_PATH','/usr/bin/chromium'),headless=True,args=['--no-sandbox'],viewport={'width':393,'height':851},is_mobile=True,has_touch=True,device_scale_factor=2.75,user_agent='Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36')
  p=c.new_page();errors=[];p.on('pageerror',lambda e:errors.append(str(e)));p.goto(URL);p.wait_for_function('!loading&&!pendingWrites&&offlineReady')
- p.evaluate("catalogFilter='iron';render('foods')");assert p.locator('.food-row').count()==40;assert p.locator('[data-food=turkey]').count()==1;assert p.locator('[data-food=spinach]').count()==1;assert p.locator('[data-food=cod]').count()==0
+ p.evaluate("catalogFilter='iron';render('foods')");assert p.locator('.food-row').count()==39;assert p.locator('[data-food=turkey]').count()==1;assert p.locator('[data-food=spinach]').count()==1;assert p.locator('[data-food=cod]').count()==0
  p.locator('[data-food=spinach]').click();assert 'ограниченной усвояемостью' in p.locator('#screen').inner_text()
  p.evaluate("render('observation')");p.get_by_text('Поддержание употребления',exact=True).click();text=p.locator('#screen').inner_text();assert 'не реже одного раза в неделю' in text and 'гарантирующая профилактику аллергии, неизвестна' in text
  # Reminders never recommend repeating a product restricted by an individual plan.
@@ -22,4 +22,4 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  p.evaluate("window.dispatchEvent(new Event('appinstalled'))");assert 'сообщил об установке' in p.locator('#install-status').inner_text();assert p.locator('[data-runtime=install]').is_hidden()
  session=c.new_cdp_session(p);result=session.send('Page.getInstallabilityErrors');assert not result.get('installabilityErrors'),result
  assert not p.evaluate('document.documentElement.scrollWidth>innerWidth');assert not errors,errors;c.close()
-print('PASS: 40 iron options and portion notes, weekly guidance with uncertainty, doctor/high-risk/observation reminder suppression, Android-sized viewport and Chromium installability, native installer error/cancel/request/success distinctions.')
+print('PASS: 39 active iron options and portion notes, weekly guidance with uncertainty, doctor/high-risk/observation reminder suppression, Android-sized viewport and Chromium installability, native installer error/cancel/request/success distinctions.')

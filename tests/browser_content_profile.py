@@ -29,7 +29,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  for group,ids in {'shellfish':['shrimp','crab','crayfish','langoustine','lobster'],'molluscs':['squid','mussels','oysters','roman-snail'],'tree-nuts':['brazil-nut']}.items():
   g=p.locator('[data-allergen-group='+group+']');g.locator('summary').click()
   for id in ids:assert g.locator('[data-allergen-food='+id+']').count()==1
- p.evaluate("render('foods')");assert p.locator('.food-row').count()==187;p.wait_for_function('Array.from(document.querySelectorAll(".food-art")).every(i=>i.complete&&i.naturalWidth>0)')
+ p.evaluate("render('foods')");assert p.locator('.food-row').count()==188;p.wait_for_function('Array.from(document.querySelectorAll(".food-art")).every(i=>i.complete&&i.naturalWidth>0)')
  p.evaluate("render('nutrition')");text=p.locator('#screen').inner_text();assert 'Responsive feeding' not in text;assert 'Кормление с вниманием к сигналам ребёнка' in text;assert 'необходимость обследования на дефицит железа' in text
  p.evaluate("render('safe')");text=p.locator('#screen').inner_text();assert 'Нежелательные и запрещённые продукты' in text and 'Грибы не включайте' in text and 'не обязательный пункт меню' in text
  p.evaluate("render('observation')");text=p.locator('#screen').inner_text();assert 'многодневных пауз' in text and '3–5 дней' in text and 'В практике автора приложения' not in text

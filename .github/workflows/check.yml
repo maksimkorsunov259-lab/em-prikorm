@@ -31,3 +31,4 @@ jobs:
           python tests/browser_content_profile.py
           python tests/browser_about.py
           python tests/browser_update_recovery.py
+          python tests/browser_catalog_revision.py
