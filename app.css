@@ -25,3 +25,5 @@ body{background:#f8f5ed}.layout{display:block;max-width:600px;padding:20px 12px;
 @media(max-width:380px){.layout .em-author-head{grid-template-columns:65px minmax(0,1fr);gap:12px}.layout .em-card.em-author .em-author-photo{width:65px;height:96px}.layout .em-author .em-eyebrow{letter-spacing:.5px}.layout .em-author-qr{grid-template-columns:94px minmax(0,1fr);gap:12px}.layout .em-author-qr img{width:94px;height:94px}}
 
 .header-help-actions{display:flex;gap:8px;align-items:stretch;min-width:0}.header-help-actions .reaction{min-height:44px}.choking-video-placeholder{margin:16px 0;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}.choking-video-placeholder h3{font-size:17px}.choking-video-placeholder p{margin-top:8px}@media(max-width:600px){.header-tools{flex-wrap:wrap}.header-tools>.link{flex-basis:100%}.header-help-actions{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto}.header-help-actions .reaction{padding:9px 10px}}
+
+.iron-tier{margin-top:24px}.iron-tier>h2{font-size:20px;line-height:1.3;margin-bottom:16px}.iron-tier .catalog-group>h3{margin-top:18px}

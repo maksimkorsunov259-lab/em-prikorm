@@ -26,7 +26,7 @@ with tempfile.TemporaryDirectory() as tmp,sync_playwright() as pw:
  for width in [320,390,1440]:
   page.set_viewport_size({'width':width,'height':900});assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
  page.locator('#activate').click();page.wait_for_function("typeof VERSION!=='undefined'&&VERSION==='recovery-test'&&!loading&&!pendingWrites");assert page.evaluate('JSON.stringify(collection)')==saved
- page.locator('[data-go=about]').click();expect(page.locator('dialog.family-about')).to_be_visible()
- context.set_offline(True);page.reload();page.wait_for_function('!loading');assert page.evaluate('p.name')=='Пациент после восстановления';page.locator('[data-go=about]').click();expect(page.locator('dialog.family-about')).to_be_visible();assert not errors,errors
+ page.locator('[data-go=about]').click();expect(page.locator('dialog.family-about:not(#family-help)')).to_be_visible()
+ context.set_offline(True);page.reload();page.wait_for_function('!loading');assert page.evaluate('p.name')=='Пациент после восстановления';page.locator('[data-go=about]').click();expect(page.locator('dialog.family-about:not(#family-help)')).to_be_visible();assert not errors,errors
  browser.close();server.shutdown()
 print('PASS: permanent update check, offline/server errors, recovery through old cache, explicit activation, unchanged diaries, About modal and offline after recovery.')

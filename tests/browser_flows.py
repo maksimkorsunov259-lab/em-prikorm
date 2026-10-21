@@ -49,7 +49,7 @@ with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
  p.evaluate('dirty=false')
  for width in [320,390,768,1440]:
   p.set_viewport_size({'width':width,'height':900})
-  for view in p.evaluate("Object.keys(screens).filter(v=>v!=='about')"):
+  for view in p.evaluate("Object.keys(screens).filter(v=>!['about','help'].includes(v))"):
    go(p,view);assert p.evaluate('view')==view;assert p.evaluate('Array.from(document.querySelectorAll("[data-go]")).every(b=>Object.hasOwn(screens,b.dataset.go))');assert not p.evaluate('document.documentElement.scrollWidth>innerWidth'),(width,view);assert p.locator('#author-slot img').count()==2
  go(p,'foods');assert p.locator('.food-row').count()==188;go(p,'allergens');assert p.locator('.allergen-group').count()==12
  # Readiness and entire app shell survive offline reload, including catalogue.
