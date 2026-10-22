@@ -12,7 +12,7 @@ with sync_playwright() as w:
  p.wait_for_function('Array.from(document.querySelectorAll(".food-art")).every(i=>i.complete&&i.naturalWidth>0)')
  p.evaluate("render('allergens')")
  for id in OLD:assert p.locator('[data-allergen-food="'+id+'"]').count()==0
- for id,group in [('fish-roe','fish'),('octopus','molluscs'),('scallop','molluscs'),('krill','shellfish')]:assert p.locator('[data-allergen-group="'+group+'"] [data-allergen-food="'+id+'"]').count()==1
+ for id,group in [('fish-roe','fishRoe'),('octopus','molluscs'),('scallop','molluscs'),('krill','shellfish')]:assert p.locator('[data-allergen-group="'+group+'"] [data-allergen-food="'+id+'"]').count()==1
  p.evaluate("render('meal')")
  for id in OLD:assert p.locator('[name=foodIds][value="'+id+'"]').count()==0
  for id in NEW:p.locator('[name=foodIds][value="'+id+'"]').check()

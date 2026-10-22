@@ -16,7 +16,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  page.evaluate("render('foods')");expect(page.locator('[data-food=cod] .food-mark')).to_have_text('✓');expect(page.locator('[data-food=pistachio] .food-mark')).to_have_text('!')
  for width in [320,390,1440]:
   page.set_viewport_size({'width':width,'height':900});assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
- page.evaluate("catalogFilter='allergens';render('foods')");expect(page.locator('[data-food=cod] .food-mark')).to_have_text('✓')
+ page.evaluate("catalogFilter='recorded';render('foods')");expect(page.locator('[data-food=cod] .food-mark')).to_have_text('✓')
  page.evaluate("render('allergens')");page.locator('[data-allergen-group=fish]>summary').click();expect(page.locator('[data-food=cod] .food-mark')).to_have_text('✓')
  page.evaluate("render('report')");text=page.locator('#report-body').inner_text();assert 'Уточнения после консультации' in text and 'Первоначальное наблюдение' in text
  # Native backup includes the clarification; original symptom entries remain intact.
