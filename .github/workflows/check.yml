@@ -33,3 +33,4 @@ jobs:
           python tests/browser_reaction.py
           python tests/browser_update_recovery.py
           python tests/browser_catalog_revision.py
+          python tests/browser_food_marks.py

@@ -7,13 +7,14 @@ ROOT=Path(__file__).resolve().parents[1]
 def ready(p):
  p.goto(URL);p.wait_for_function('!loading&&!pendingWrites');assert not p.evaluate('storageFailed')
 def backup(p,path):
+ if p.locator('#family-help[open]').count():p.locator('#family-help [data-family-about-close]').click()
  with p.expect_download() as d:p.locator('#storage-error [data-runtime=export]').click()
  d.value.save_as(path);return json.loads(path.read_text())
 with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
  b=pw.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH','/usr/bin/chromium'),headless=True,args=['--no-sandbox'])
  # Read denial must not create an export of an empty replacement.
  c=b.new_context();p=c.new_page();p.add_init_script("Object.defineProperty(window,'indexedDB',{get(){throw new Error('Storage denied')}})")
- p.goto(URL);p.wait_for_selector('#storage-error:not([hidden])');assert not p.evaluate('canExport');assert p.locator('#storage-error [data-runtime=export]').count()==0;assert p.locator('#screen a[href="tel:112"]').count()==1;c.close()
+ p.goto(URL);p.wait_for_selector('#storage-error:not([hidden])');assert not p.evaluate('canExport');assert p.locator('#storage-error [data-runtime=export]').count()==0;assert p.locator('#family-help[open] a[href="tel:112"]').count()==1;c.close()
  # Unsupported snapshot is preserved verbatim for recovery, not replaced by defaults.
  c=b.new_context(accept_downloads=True);p=c.new_page();ready(p)
  original={'app':'em-prikorm','schemaVersion':999,'original':'Keep these data'}
