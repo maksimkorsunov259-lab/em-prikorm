@@ -38,3 +38,11 @@ body{background:#f8f5ed}.layout{display:block;max-width:600px;padding:20px 12px;
 #triage-dialog.choking-help h2{font:700 25px/1.2 system-ui,sans-serif;letter-spacing:-.7px;margin:0 0 16px;overflow-wrap:anywhere}
 .repeat-foods{border:1px solid #cdddb6;background:#f8fbf3}.repeat-foods>p{margin:12px 0}.repeat-food{border-top:1px solid var(--line);padding:4px 0 12px}.repeat-food .food-row{border:0}.repeat-record{margin-left:0;font-size:14px}.repeat-more{background:transparent}.repeat-more .repeat-food:first-of-type{margin-top:12px}
 @media(max-width:380px){#triage-dialog.choking-help{padding:16px}#triage-dialog.choking-help .modal-actions{top:-16px}}
+
+.report-context{margin:12px 0;font-size:14px;line-height:1.5}
+.report-context>div{padding:8px 0;border-bottom:1px solid var(--line,#e4d8c5)}
+.report-context dt{font-weight:600}.report-context dd{margin:2px 0 0}
+.report-allergens{width:100%;table-layout:fixed;font-size:13px}
+.report-allergens th,.report-allergens td{overflow-wrap:anywhere;vertical-align:top;text-align:left}
+.report-allergens th:first-child{width:48%}.report-allergens th[scope=row]{font-weight:600}
+.report-foods{display:block;margin-top:5px;font-weight:400;line-height:1.5}

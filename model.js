@@ -2,7 +2,7 @@
 const PrikormModel=(()=>{
  const localDate=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
  const localTime=(d=new Date())=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
- const riskKeys=['severeEczema','eggAllergy','milkAllergy','peanutReaction','complex'],readyKeys=['head','sit','coordinate','swallow'];
+ const riskKeys=['severeEczema','eggAllergy','milkAllergy','peanutAllergy','peanutReaction','complex'],readyKeys=['head','sit','coordinate','swallow'];
  const codes=['local','eczema','hives','swelling','vomit','repeatVomit','pallor','lethargy','diarrhea','breathing','voice','collapse','severeLethargy','rapid','throat','severePain','other'];
  const knownFoods=new Set((typeof FOOD_CATALOG!=='undefined'?FOOD_CATALOG:[]).map(f=>f.id));
  function patient(name='Новый пациент',dob=''){return {id:crypto.randomUUID(),name,dob,createdAt:new Date().toISOString(),risks:Object.fromEntries(riskKeys.map(k=>[k,'unknown'])),ready:Object.fromEntries(readyKeys.map(k=>[k,false])),meals:[],symptoms:[],plan:'',doctorFoods:[],foodReviews:[],observationMode:false,questions:''};}
@@ -32,20 +32,20 @@ const PrikormModel=(()=>{
   const rows=p.meals.filter(m=>m.kind==='eaten'&&m.foodIds.includes(f.id));
   if(p.doctorFoods.some(d=>d.foodId===f.id&&d.status==='avoid'))return {label:'Ограничение из плана врача',tone:'red',symbol:'!'};
   if(unresolvedFoodSymptoms(p,f.id).length)return {label:'Есть связанные симптомы · причину уточняют',tone:'red',symbol:'!'};
-  if(f.allergens.includes('egg')&&p.risks.eggAllergy==='yes'||f.allergens.includes('milk')&&p.risks.milkAllergy==='yes')return {label:'В профиле указана аллергия · нужен план врача',tone:'red',symbol:'!'};
+  if(f.allergens.includes('egg')&&p.risks.eggAllergy==='yes'||f.allergens.includes('milk')&&p.risks.milkAllergy==='yes'||f.allergens.includes('peanut')&&p.risks.peanutAllergy==='yes')return {label:'В профиле указана аллергия · нужен план врача',tone:'red',symbol:'!'};
   if(!rows.length)return {label:p.meals.some(m=>m.foodIds.includes(f.id))?'Предлагали · употребление не отмечено':'Употребление не записано',tone:'neutral',symbol:'·'};
   if(rows.some(m=>m.result!=='none'))return {label:'Наблюдение / результат не уточнён',tone:'orange',symbol:'◌'};
   if(relatedSymptoms(p,f.id).length)return {label:'Ел · связь прежних симптомов с продуктом исключена врачом',tone:'green',symbol:'✓'};
   return {label:'Ел · по записям без симптомов',tone:'green',symbol:'✓'};
  }
  function validate(v){safeTree(v);if(!obj(v)||v.app!=='em-prikorm'||v.schemaVersion!==1)fail();array(v.patients,100);if(!v.patients.length)fail();unique(v.patients);id(v.activePatientId);if(!v.patients.some(p=>p.id===v.activePatientId))fail();
-  for(const p of v.patients){str(p.name,80);if(!p.name.trim())fail();date(p.dob,true);iso(p.createdAt);if(!obj(p.risks)||!obj(p.ready))fail();riskKeys.forEach(k=>{if(k==='milkAllergy'&&!Object.hasOwn(p.risks,k))return;one(p.risks[k],['unknown','no','yes']);});readyKeys.forEach(k=>bool(p.ready[k]));bool(p.observationMode);str(p.plan,3000);str(p.questions,2000);array(p.meals,20000);array(p.symptoms,20000);array(p.doctorFoods,knownFoods.size);unique(p.meals);unique(p.symptoms);unique(p.doctorFoods,'foodId');
+  for(const p of v.patients){str(p.name,80);if(!p.name.trim())fail();date(p.dob,true);iso(p.createdAt);if(!obj(p.risks)||!obj(p.ready))fail();riskKeys.forEach(k=>{if(['milkAllergy','peanutAllergy'].includes(k)&&!Object.hasOwn(p.risks,k))return;one(p.risks[k],['unknown','no','yes']);});readyKeys.forEach(k=>bool(p.ready[k]));bool(p.observationMode);str(p.plan,3000);str(p.questions,2000);array(p.meals,20000);array(p.symptoms,20000);array(p.doctorFoods,knownFoods.size);unique(p.meals);unique(p.symptoms);unique(p.doctorFoods,'foodId');
    for(const m of p.meals){occurrence(m.date,m.time,p.dob);iso(m.createdAt);iso(m.updatedAt);if(m.updatedAt<m.createdAt)fail();one(m.kind,['eaten','offered','refused','skipped']);bool(m.unknown);array(m.foodIds,knownFoods.size);if(new Set(m.foodIds).size!==m.foodIds.length)fail();m.foodIds.forEach(food);if(m.kind!=='skipped'&&!m.foodIds.length&&!m.unknown)fail();one(m.result,['none','pending','unknown']);if(m.kind!=='eaten'&&m.result!=='unknown')fail();for(const k of ['dish','amount','texture'])str(m[k],300);str(m.note,1500);}
    for(const s of p.symptoms){occurrence(s.date,s.time,p.dob);iso(s.createdAt);iso(s.updatedAt);if(s.updatedAt<s.createdAt)fail();array(s.codes,codes.length);if(!s.codes.length||new Set(s.codes).size!==s.codes.length)fail();s.codes.forEach(c=>one(c,codes));one(s.onset,['unknown','soon','hours','later','unrelated']);if(s.mealId!==null){id(s.mealId);if(!p.meals.some(m=>m.id===s.mealId&&m.kind==='eaten'))fail();}str(s.note,2000);photo(s.photo);}
    if(Object.hasOwn(p,'foodReviews')){array(p.foodReviews,knownFoods.size);unique(p.foodReviews,'foodId');for(const r of p.foodReviews){food(r.foodId);date(r.date);if(p.dob&&r.date<p.dob)fail();str(r.note,1000);if(!r.note.trim())fail();array(r.symptoms,20000);if(!r.symptoms.length)fail();unique(r.symptoms);for(const v of r.symptoms){id(v.mealId);iso(v.updatedAt);iso(v.mealUpdatedAt);}}}
    for(const d of p.doctorFoods){food(d.foodId);one(d.status,['individual','avoid']);str(d.note,300);if(!d.note.trim())fail();}
   }
-  const copy=structuredClone(v);for(const p of copy.patients){if(!Object.hasOwn(p.risks,'milkAllergy'))p.risks.milkAllergy='unknown';if(!Object.hasOwn(p,'foodReviews'))p.foodReviews=[];}return copy;
+  const copy=structuredClone(v);for(const p of copy.patients){for(const key of ['milkAllergy','peanutAllergy'])if(!Object.hasOwn(p.risks,key))p.risks[key]='unknown';if(!Object.hasOwn(p,'foodReviews'))p.foodReviews=[];}return copy;
  }
  return {localDate,localTime,patient,fresh,validate,date,occurrence,riskKeys,photo,relatedSymptoms,reviewSnapshot,unresolvedFoodSymptoms,foodStatus};
 })();
