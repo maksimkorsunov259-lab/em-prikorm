@@ -1,5 +1,5 @@
 const PREFIX='em-prikorm:'+new URL('./',self.location).pathname+':';
-const CACHE=PREFIX+'16922bb7790a';
+const CACHE=PREFIX+'16b1c844423e';
 const FILES=["./index.html", "./styles.css", "./app.css", "./family-ui.css", "./family-about.js", "./update-check.js", "./catalog.js", "./clinical-rules.js", "./clinical-rules-v1.1.json", "./model.js", "./storage.js", "./app.js", "./runtime.js", "./report-css.js", "./manifest.webmanifest", "./assets/icon-180.png", "./assets/icon-192.png", "./assets/icon-512.png", "./assets/icon-original.png", "./assets/icon-rounded-180.png", "./assets/icon-rounded-192.png", "./assets/icon-rounded-512.png", "./assets/icon-rounded-master.png", "./assets/icon.svg", "./assets/image-177842a5a4de.png", "./assets/image-9bfbd99af1d3.png"];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(FILES.map(file=>new Request(new URL(file,self.location),{cache:'reload'})));})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(PREFIX)&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();})()));
