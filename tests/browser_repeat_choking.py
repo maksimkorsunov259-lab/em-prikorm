@@ -7,7 +7,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  page=c.new_page();errors=[];prompts=[];page.on('pageerror',lambda e:errors.append(str(e)));page.on('dialog',lambda d:(prompts.append(d.type),d.dismiss()));page.goto(URL);page.wait_for_function('!loading&&!pendingWrites')
  page.evaluate("render('profile')");page.locator('[name=name]').fill('Несохранённое имя');trigger=page.locator('[data-action=choking-help]');dialog=page.locator('#triage-dialog');close=dialog.locator('[data-action=close-triage]')
  for width in [320,390,1440]:
-  page.set_viewport_size({'width':width,'height':900});trigger.click();expect(dialog).to_be_visible();expect(close).to_have_text('← Вернуться');expect(close).to_be_focused()
+  page.set_viewport_size({'width':width,'height':900});trigger.click();expect(dialog).to_be_visible();expect(close).to_have_text('← Профиль');expect(close).to_be_focused()
   assert dialog.evaluate('e=>e.matches(":modal")');assert not dialog.evaluate('e=>e.scrollWidth>e.clientWidth')
   cb=close.bounding_box();db=dialog.bounding_box();assert cb['x']+cb['width']/2>db['x']+db['width']/2;assert 15<=db['x']+db['width']-cb['x']-cb['width']<=23;assert cb['y']<db['y']+35
   assert cb['y']+cb['height']<=dialog.locator('h2').bounding_box()['y']
@@ -17,7 +17,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
   trigger.click();page.keyboard.press('Escape');expect(dialog).not_to_be_visible()
  assert not prompts,prompts
  # Reuse for urgent triage must restore the original bottom action and label.
- page.evaluate("dirty=false;showTriage('emergency')");expect(close).to_have_text('Помощь оказана — вернуться к записи');assert 'choking-help' not in (dialog.get_attribute('class') or '');assert dialog.evaluate('e=>e.lastElementChild.classList.contains("modal-actions")');close.click()
+ page.evaluate("dirty=false;showTriage('emergency')");expect(close).to_have_text('← Профиль');assert 'choking-help' not in (dialog.get_attribute('class') or '');assert dialog.evaluate('e=>e.lastElementChild.classList.contains("modal-actions")');close.click()
  page.evaluate("""()=>{p.dob=before(270);Object.keys(p.risks).forEach(k=>p.risks[k]='no');const now=new Date().toISOString();p.meals=[['beef',8],['apple',7],['pear',6],['cod',9],['chicken',8],['honey',8],['peas',10],['lentils',12],['turkey',11],['milk',15]].map(([id,days])=>({id:'meal-'+id,date:before(days),time:'12:00',createdAt:now,updatedAt:now,kind:'eaten',foodIds:[id],unknown:false,dish:'',amount:'',texture:'',result:id==='milk'?'pending':'none',note:''}));p.symptoms=[{id:'symptom',date:before(9),time:'13:00',createdAt:now,updatedAt:now,codes:['local'],onset:'soon',mealId:'meal-cod',note:'',photo:null}];p.doctorFoods=[{foodId:'chicken',status:'avoid',note:'Не предлагать'}];render('today');}""")
  assert page.evaluate('foodsToRepeat().map(f=>f.id)')==['lentils','turkey','peas','beef']
  card=page.locator('.repeat-foods');expect(card).to_be_visible();assert card.locator('[data-repeat-food]').count()==4;assert card.locator('[data-repeat-food]:visible').count()==3
