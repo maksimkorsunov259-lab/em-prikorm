@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const SPEC=CLINICAL_SPEC, VERSION='1.0.18';let TODAY=PrikormModel.localDate();
+const SPEC=CLINICAL_SPEC, VERSION='1.0.19';let TODAY=PrikormModel.localDate();
 const rules=new Map(SPEC.rules.map(r=>[r.id,r]));
 const foods=FOOD_CATALOG;
 const availableFoods=foods.filter(f=>!f.retired);
@@ -61,19 +61,19 @@ function catalogRows(){
 screens.food=()=>{const f=food(selectedFood),s=productState(f),doctor=p.doctorFoods.find(d=>d.foodId===f.id),rows=eaten().filter(m=>m.foodIds.includes(f.id));return back(foodOrigin,foodOrigin==='allergens'?'Аллергены':'Продукты')+header(f.group,f.name)+`<div class="food-detail-art">${foodArt(f,true)}</div>`+`<div class="food-status-detail">${foodMark(f)}<span>${s.label}</span></div>${lastFoodMeal(f)?'<p class="small">Последняя запись об употреблении: '+fmt(lastFoodMeal(f).date)+'</p>':''}${foodRepeatNote(f)?notice(esc(foodRepeatNote(f))+'<p class="small">Минимальная частота, гарантирующая профилактику аллергии, неизвестна.</p>'): ''}${foodReviewForm(f)}`+ageNotice()+(doctor?notice('<strong>Сведения из плана врача</strong><p>'+esc(doctor.note)+'</p>',doctor.status==='avoid'?'warn':''):'')+f.allergens.filter(a=>['peanut','egg','milk'].includes(a)).map(allergenAdvice).join('')+(f.id==='honey'&&(ageMonths(p.dob)===null||ageMonths(p.dob)<12)?notice('<strong>Мёд до года не дают.</strong> Это касается и мёда в составе блюд. Запись уже произошедшего употребления остаётся доступной.','danger'):'')+(f.iron?`<section class="card"><h3>Железо в рационе</h3><p>${esc(f.ironNote)}</p><p class="small">Подборка помогает разнообразить рацион; дневник не определяет обеспеченность железом и не назначает лечение дефицита.</p></section>`:'')+`<section class="card"><h3>Безопасная форма</h3><p>${f.textureRules}</p><p class="small">Иллюстрация показывает продукт, а не форму подачи ребёнку.</p><p class="small">Ребёнок сидит, взрослый постоянно наблюдает. Универсальный размер кусочка не назначается.</p></section><section class="card"><h3>Что отражается в дневнике</h3><p>${f.allergens.length?f.allergens.map(a=>allergenNames[a]).join(', '):'Для выбранного продукта не указан распространённый аллерген. Это не гарантирует отсутствие любой аллергии.'}</p>${f.compositionNote?'<p class="small">'+esc(f.compositionNote)+'</p>':''}${f.id==='wheat'?'<p class="small">Пшеница и аллергия на неё учитываются отдельно от глютена и целиакии.</p>':''}${f.id==='iron-cereal'?'<p class="small">Злак, молоко и другие компоненты отметьте отдельно по этикетке.</p>':''}</section><button class="primary wide" data-record-food="${f.id}">Записать фактически съеденное</button><p class="small" style="margin-top:12px">Наличие кнопки не является рекомендацией предложить продукт.</p><h3 class="tabs-title">История продукта</h3>${rows.length?rows.slice().reverse().map(mealCard).join(''):empty('Пока нет записей об употреблении.')}<h3 class="tabs-title">Подробнее</h3>${f.refs.map(id=>ruleCard(id)).join('')}`;};
 function empty(t){return `<div class="empty">${t}</div>`;}
 const allergenGroups=[
- {id:'wheat',name:'Пшеница',keys:['wheat']},
  {id:'egg',name:'Яйцо',keys:['egg']},
  {id:'milk',name:'Молоко',keys:['milk']},
- {id:'sesame',name:'Кунжут',keys:['sesame']},
- {id:'celery',name:'Сельдерей',keys:['celery']},
+ {id:'wheat',name:'Пшеница',keys:['wheat']},
+ {id:'fish',name:'Рыба',keys:['fish'],separate:true},
+ {id:'tree-nuts',name:'Орехи',keys:['walnut','almond','cashew','hazelnut','pecan','pistachio','pineNut','coconut','brazilNut'],separate:true},
+ {id:'shellfish',name:'Ракообразные',keys:['shellfish'],separate:true},
+ {id:'molluscs',name:'Моллюски',keys:['molluscs'],separate:true},
  {id:'soy',name:'Соя',keys:['soy']},
  {id:'peanut',name:'Арахис',keys:['peanut']},
- {id:'tree-nuts',name:'Орехи',keys:['walnut','almond','cashew','hazelnut','pecan','pistachio','pineNut','coconut','brazilNut'],separate:true},
- {id:'lupin',name:'Люпин',keys:['lupin']},
- {id:'fish',name:'Рыба',keys:['fish'],separate:true},
+ {id:'sesame',name:'Кунжут',keys:['sesame']},
  {id:'fishRoe',name:'Рыбная икра',keys:['fishRoe']},
- {id:'molluscs',name:'Моллюски',keys:['molluscs'],separate:true},
- {id:'shellfish',name:'Ракообразные',keys:['shellfish'],separate:true}
+ {id:'celery',name:'Сельдерей',keys:['celery']},
+ {id:'lupin',name:'Люпин',keys:['lupin']}
 ];
 function groupFoods(g){return foods.filter(f=>f.allergens.some(a=>g.keys.includes(a)));}
 function groupMeals(g){return eaten().filter(m=>knownAllergens(m).some(a=>g.keys.includes(a)));}
