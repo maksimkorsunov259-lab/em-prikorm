@@ -15,7 +15,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  # An old 'offered' record is never silently converted to consumed.
  p.evaluate("editing='offered-old';render('meal')");assert p.locator('[name=kind]').input_value()=='';p.locator('#meal-form [type=submit]').click();assert p.evaluate("p.meals.find(m=>m.id==='offered-old').kind")=='offered'
  p.locator('[name=kind]').select_option('refused');p.locator('#meal-form [type=submit]').click();p.wait_for_function('!pendingWrites');assert p.evaluate("p.meals.find(m=>m.id==='offered-old').kind")=='refused';assert p.evaluate("productState(food('beef')).tone")=='neutral'
- p.evaluate("render('more')");assert p.locator('#screen [data-go=report]').count()==0;p.get_by_text('Исключение молока и/или яйца при подозрении на аллергию',exact=True).click();assert 'Не исключайте автоматически оба продукта' in p.locator('#screen').inner_text()
+ p.evaluate("render('more')");assert p.locator('#screen [data-go=report]').count()==0;p.locator('.nav [data-go=allergens]').click();p.locator('.allergen-info > summary').click();p.get_by_text('Исключение молока и/или яйца при подозрении на аллергию',exact=True).click();assert 'Не исключайте автоматически оба продукта' in p.locator('#screen').inner_text()
  p.evaluate("render('diary')");expect(p.locator('#screen [data-go=report]')).to_be_visible()
  p.evaluate("render('readiness')");assert 'выталкивающий рефлекс языка угас' in p.locator('[data-ready=swallow]').locator('..').inner_text()
  p.evaluate("render('observation')");assert '3–5 дней' in p.locator('.observation-guidance').inner_text()
