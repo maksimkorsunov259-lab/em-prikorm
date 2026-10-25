@@ -42,3 +42,5 @@ h1[tabindex="-1"]:focus{outline:none}
 .allergen-product .product-context{margin:0 0 14px;padding-left:0}
 .allergen-info>summary{font-weight:500}.composition-status{margin:12px 0}.group-footnote{margin-top:14px}
 @media(max-width:350px){.allergen-group>summary{padding:15px 12px;gap:4px 6px}.allergen-group-name{font-size:14px}.allergen-group-state{font-size:10px}}
+
+.iron-category summary{line-height:1.5}.iron-category .food-info{min-width:0}.iron-category .food-row{width:100%}
