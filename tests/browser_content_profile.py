@@ -19,8 +19,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  dairy=p.evaluate("foods.find(f=>f.id!=='milk'&&f.allergens.includes('milk')).id");p.evaluate("id=>{selectedFood=id;render('food')}",dairy);assert 'перед введением обсудите план с врачом' in p.locator('#screen').inner_text()
  p.evaluate("render('meal')");p.locator('[name=foodIds][value="'+dairy+'"]').check();assert 'перед введением обсудите план с врачом' in p.locator('#screen').inner_text();p.evaluate('dirty=false')
  p.evaluate("render('report')");assert 'установленная аллергия на белки коровьего молока: да' in p.locator('#report-body').inner_text()
- with p.expect_download() as d:p.locator('[data-action=download-report]').click()
- report=Path(tmp)/'report.html';d.value.save_as(report);assert 'установленная аллергия на белки коровьего молока: да' in report.read_text()
+ p.pdf(path=str(Path(tmp)/'report.pdf'));assert (Path(tmp)/'report.pdf').stat().st_size>1000
  p.evaluate("render('settings')")
  with p.expect_download() as d:p.locator('[data-runtime=export]').click()
  backup=Path(tmp)/'backup.json';d.value.save_as(backup);data=json.loads(backup.read_text());assert data['patients'][0]['risks']['milkAllergy']=='yes';assert data['patients'][0]['meals'][0]['note']=='Сохранить запись'

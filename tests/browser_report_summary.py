@@ -14,9 +14,9 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  assert '1 записей об употреблении с неуточнённым составом' in page.locator('#report-body').inner_text()
  for width in [320,390,1440]:
   page.set_viewport_size({'width':width,'height':900});assert not page.evaluate('document.documentElement.scrollWidth>innerWidth');page.screenshot(path='/tmp/report-summary-'+str(width)+'.png',full_page=True)
- with page.expect_download() as download:page.locator('[data-action=download-report]').click()
- path=Path(tmp)/'report.html';download.value.save_as(path);html=path.read_text();assert 'Тяжёлый АД' not in html;assert 'Установленная аллергия на арахис' in html
- export=c.new_page();export.set_content(html);assert export.locator('[data-report-allergen]').evaluate_all('(rows)=>rows.map(r=>r.dataset.reportAllergen)')==actual;expect(export.locator('.report-context dd').nth(3)).to_have_text('не уточнено');export.emulate_media(media='print');assert export.locator('.report-context dt').count()==5;export.pdf(path=str(Path(tmp)/'report.pdf'));export.close()
+ page.evaluate('window.print=()=>{window.printCalled=true}');page.locator('[data-action=print-report]').click();assert page.evaluate('window.printCalled')
+ page.emulate_media(media='print');expect(page.locator('#report-body')).to_be_visible();assert page.locator('.report-context dt').count()==5;page.pdf(path=str(Path(tmp)/'report.pdf'));assert (Path(tmp)/'report.pdf').stat().st_size>1000;page.emulate_media(media='screen')
+ assert not page.locator('[data-action=download-report]').count()
  page.evaluate("render('profile')");page.locator('[name=peanutAllergy]').select_option('yes');page.locator('#patient-form [type=submit]').click();page.wait_for_function('!pendingWrites');page.evaluate("render('report')");expect(page.locator('.report-context dd').nth(3)).to_have_text('да')
  page.evaluate('navigator.serviceWorker.ready');c.set_offline(True);page.reload();page.wait_for_function('!loading&&!pendingWrites');page.evaluate("render('report')");expect(page.locator('.report-context dd').nth(3)).to_have_text('да');assert page.locator('[data-report-allergen]').count()==len(actual);assert not errors,errors;c.close();b.close()
-print('PASS: context lines, explicit peanut allergy, ordered allergen groups, consumed foods only, mixed-meal deduplication, separate roe, legacy entries, HTML/PDF and offline.')
+print('PASS: context lines, explicit peanut allergy, ordered allergen groups, consumed foods only, mixed-meal deduplication, separate roe, legacy entries, PDF and offline.')

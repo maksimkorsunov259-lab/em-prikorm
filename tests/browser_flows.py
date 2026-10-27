@@ -27,8 +27,7 @@ with sync_playwright() as pw, tempfile.TemporaryDirectory() as tmp:
  go(p,'plan');p.locator('[name=plan]').fill('Тестовый план врача');p.locator('[name=foodId]').select_option('pistachio');p.locator('[name=doctorStatus]').select_option('avoid');p.locator('[name=doctorNote]').fill('Не предлагать до оценки врача');p.locator('[name=confirmed]').check();p.locator('#plan-form [type=submit]').click();saved(p);assert not p.evaluate("reminderAllowed('pistachio')")
  go(p,'report');p.locator('#report-questions').fill('Вопрос для врача');saved(p)
  assert p.locator('.report-photo').count()==0
- with p.expect_download() as d:p.locator('[data-action=download-report]').click()
- dest=Path(tmp)/'report.html';d.value.save_as(dest);assert 'Вопрос для врача' in dest.read_text();assert '<img class="report-photo"' not in dest.read_text();assert 'Учеб' not in dest.read_text()
+ report=p.locator('#report-body').inner_html();assert 'Вопрос для врача' in report;assert '<img class="report-photo"' not in report;assert 'Учеб' not in report;assert not p.locator('[data-action=download-report]').count()
  p.locator('#include-photos').check();assert p.locator('.report-photo').count()==1
  p.pdf(path=str(Path(tmp)/'report.pdf'),format='A4');assert (Path(tmp)/'report.pdf').stat().st_size>1000
  go(p,'patients');p.locator('[data-go=newPatient]').click();profile(p,'Тестовая Лиза',dob);assert p.evaluate('p.meals.length')==0;assert p.evaluate('p.symptoms.length')==0

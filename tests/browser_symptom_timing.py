@@ -12,8 +12,8 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
   p.locator('[name=codes][value=local]').check();sel.select_option(key);p.locator('#symptom-form [type=submit]').click();saved();expect(p.locator('#screen')).to_contain_text(label)
  p.reload();saved();assert p.evaluate('p.symptoms.map(s=>s.onset)')==[k for k,v in OPTIONS]
  p.evaluate("render('report')")
- with p.expect_download() as dl:p.locator('[data-action=download-report]').click()
- file=Path(tmp)/'report.html';dl.value.save_as(file);report=file.read_text();assert all(label in report for key,label in OPTIONS)
+ report=p.locator('#report-body').inner_text();assert all(label in report for key,label in OPTIONS)
+ p.pdf(path=str(Path(tmp)/'report.pdf'));assert not p.locator('[data-action=download-report]').count()
  p.evaluate("render('settings')")
  with p.expect_download() as dl:p.locator('[data-runtime=export]').click()
  file=Path(tmp)/'backup.json';dl.value.save_as(file);backup=json.loads(file.read_text());assert [s['onset'] for s in backup['patients'][0]['symptoms']]==[k for k,v in OPTIONS]
