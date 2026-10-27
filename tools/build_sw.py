@@ -2,7 +2,7 @@ from pathlib import Path
 import hashlib,json
 p=Path(__file__).resolve().parents[1]
 (p/'report-css.js').write_text('const REPORT_CSS='+json.dumps((p/'styles.css').read_text()+'\n'+(p/'app.css').read_text()+'\n'+(p/'family-ui.css').read_text(),ensure_ascii=False)+';\n')
-files=['index.html','styles.css','app.css','family-ui.css','family-about.js','family-data.js','update-check.js','catalog.js','clinical-rules.js','clinical-rules-v1.1.json','model.js','storage.js','app.js','runtime.js','report-css.js','manifest.webmanifest']+sorted(str(f.relative_to(p)) for f in (p/'assets').glob('*'))
+files=['app-qr.svg','index.html','styles.css','app.css','family-ui.css','family-about.js','family-data.js','update-check.js','catalog.js','clinical-rules.js','clinical-rules-v1.1.json','model.js','storage.js','app.js','runtime.js','report-css.js','manifest.webmanifest']+sorted(str(f.relative_to(p)) for f in (p/'assets').glob('*'))
 build=hashlib.sha256(b''.join((p/f).read_bytes() for f in files)).hexdigest()[:12]
 s=(p/'sw.js').read_text()
 import re
