@@ -42,6 +42,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
   accept[0]=False
  # Reload the cached application offline and use About again.
  accept[0]=True;p.reload();p.wait_for_selector('.family-about',state='attached');p.evaluate('navigator.serviceWorker.ready');c.set_offline(True);p.reload();p.wait_for_selector('.family-about',state='attached')
- trigger=p.locator('[data-open-about],[data-view=about],[data-go=about]').first;trigger.click();expect(dialog).to_be_visible();assert dialog.locator('[data-family-about-close]').is_visible();assert p.evaluate("document.documentElement.style.overflow")=='hidden';dialog.locator('[data-family-about-close]').click();expect(dialog).not_to_be_visible();assert p.evaluate("document.documentElement.style.overflow")!='hidden'
+ # Native dialog close hides it before the queued close event releases the scroll lock.
+ trigger=p.locator('[data-open-about],[data-view=about],[data-go=about]').first;trigger.click();expect(dialog).to_be_visible();assert dialog.locator('[data-family-about-close]').is_visible();assert p.evaluate("document.documentElement.style.overflow")=='hidden';dialog.locator('[data-family-about-close]').click();expect(dialog).not_to_be_visible();p.wait_for_function("document.documentElement.style.overflow !== 'hidden'")
  assert not errors,errors;c.close()
 print('PASS:',APP,'About overlay: unsaved form identity/values, focus trap, Escape/button return, scroll restoration, links, cancelled/confirmed navigation, responsive widths and offline.')
