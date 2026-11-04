@@ -24,15 +24,14 @@ jobs:
           python -m http.server 8040 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE/.." > /tmp/em-prikorm-server.log 2>&1 &
           export APP_URL="http://127.0.0.1:8040/$(basename "$GITHUB_WORKSPACE")/"
           export CHROMIUM_PATH="$(python -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
-          python tests/browser_flows.py
-          python tests/browser_edges.py
-          python tests/browser_updates.py
-          python tests/browser_nutrition_install.py
-          python tests/browser_content_profile.py
-          python tests/browser_about.py
-          python tests/browser_reaction.py
-          python tests/browser_update_recovery.py
-          python tests/browser_catalog_revision.py
-          python tests/browser_food_marks.py
-          python tests/browser_repeat_choking.py
-          python tests/browser_catalog_guidance.py
+          python - <<'PYTEST'
+          import subprocess, sys
+          tests = ['tests/browser_flows.py', 'tests/browser_edges.py', 'tests/browser_updates.py', 'tests/browser_nutrition_install.py', 'tests/browser_content_profile.py', 'tests/browser_about.py', 'tests/browser_reaction.py', 'tests/browser_update_recovery.py', 'tests/browser_catalog_revision.py', 'tests/browser_food_marks.py', 'tests/browser_repeat_choking.py', 'tests/browser_catalog_guidance.py']
+          for test in tests:
+              result = subprocess.run([sys.executable, test], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+              print(result.stdout, flush=True)
+              if result.returncode:
+                  message = result.stdout[-6000:].replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+                  print(f'::error title={test}::{message}', flush=True)
+                  sys.exit(result.returncode)
+          PYTEST
