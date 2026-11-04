@@ -18,7 +18,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  # Compound milk products, not only the milk entry, get the profile advice.
  dairy=p.evaluate("foods.find(f=>f.id!=='milk'&&f.allergens.includes('milk')).id");p.evaluate("id=>{selectedFood=id;render('food')}",dairy);assert 'перед введением обсудите план с врачом' in p.locator('#screen').inner_text()
  p.evaluate("render('meal')");p.locator('[name=foodIds][value="'+dairy+'"]').check();assert 'перед введением обсудите план с врачом' in p.locator('#screen').inner_text();p.evaluate('dirty=false')
- p.evaluate("render('report')");assert 'установленная аллергия на белки коровьего молока: да' in p.locator('#report-body').inner_text()
+ p.evaluate("render('report')");milk_context=p.locator('.report-context > div').filter(has=p.get_by_text('Установленная аллергия на белки коровьего молока',exact=True));assert milk_context.locator('dd').inner_text()=='да'
  p.pdf(path=str(Path(tmp)/'report.pdf'));assert (Path(tmp)/'report.pdf').stat().st_size>1000
  p.evaluate("render('settings')")
  with p.expect_download() as d:p.locator('[data-runtime=export]').click()
