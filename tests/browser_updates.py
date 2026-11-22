@@ -25,12 +25,12 @@ with tempfile.TemporaryDirectory() as tmp,sync_playwright() as pw:
  # Pending writes finish before activation; profile must survive the replacement.
  p.evaluate("window.realWrite=DiaryStore.write;DiaryStore.write=s=>new Promise(resolve=>{window.finishWrite=()=>realWrite(s).then(resolve)});p.name='Сохранённый профиль';render('today')")
  p.wait_for_function('pendingWrites===1');p.locator('#update-banner button').click();p.wait_for_function('updatePreparing');assert p.evaluate('VERSION')==initial;assert p.locator('#update-banner button').is_disabled()
- p.evaluate('finishWrite()');p.wait_for_function("VERSION==='update-test-1'&&!loading");assert p.evaluate('p.name')=='Сохранённый профиль';assert p.locator('#update-banner').is_hidden()
+ p.evaluate('finishWrite()');p.wait_for_function("typeof VERSION!=='undefined'&&VERSION==='update-test-1'&&!loading");assert p.evaluate('p.name')=='Сохранённый профиль';assert p.locator('#update-banner').is_hidden()
  # Another tab gets an offer; its unfinished form is not lost to an automatic reload.
  q.wait_for_function('reloadReady');assert q.evaluate('VERSION')==initial;assert q.locator('[name=name]').input_value()=='Несохранённая форма'
  q.locator('#update-banner button').click();assert 'Сначала сохраните' in q.locator('#update-message').inner_text();assert q.evaluate('dirty')
  q.evaluate("render('today')");dismiss=lambda d:d.dismiss();q.on('dialog',dismiss);q.locator('#update-banner button').click();assert q.evaluate('VERSION')==initial
- q.remove_listener('dialog',dismiss);q.on('dialog',lambda d:d.accept());q.locator('#update-banner button').click();q.wait_for_function("VERSION==='update-test-1'&&!loading");assert q.evaluate('p.name')=='Сохранённый профиль'
+ q.remove_listener('dialog',dismiss);q.on('dialog',lambda d:d.accept());q.locator('#update-banner button').click();q.wait_for_function("typeof VERSION!=='undefined'&&VERSION==='update-test-1'&&!loading");assert q.evaluate('p.name')=='Сохранённый профиль'
  q.close();r=c.new_page();ready(r,url);assert r.evaluate('VERSION')=='update-test-1'
  # An error while waiting for a write must keep the old document and offer recovery.
  deploy(app,'update-test-2');r.evaluate('registration.update()');r.wait_for_function('!!registration.waiting');r.on('dialog',lambda d:d.accept())

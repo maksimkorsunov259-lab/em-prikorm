@@ -34,6 +34,20 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  expect(p.locator('[data-family-install-ios]')).to_contain_text('Safari')
  for w in [320,390,1440]:
   p.set_viewport_size({'width':w,'height':900});assert not p.evaluate('document.documentElement.scrollWidth>innerWidth'),(APP,w);p.screenshot(path='/tmp/data-'+APP+'-'+str(w)+'.png',full_page=True)
+ # Clearing a file while the browser is reading it must cancel that preview.
+ p.evaluate("""() => {
+  const read = File.prototype.text;
+  File.prototype.text = async function () {
+   File.prototype.text = read;
+   await new Promise(resolve => { window.finishFileRead = resolve; });
+   return window.lastFileRead = read.call(this);
+  };
+ }""")
+ file(baseline);p.wait_for_function('typeof finishFileRead==="function"')
+ p.locator('#import-file').set_input_files([])
+ p.evaluate('finishFileRead()')
+ p.evaluate('window.lastFileRead');p.evaluate('new Promise(resolve => setTimeout(resolve, 0))')
+ expect(action('import-add')).to_be_hidden();assert count(download())==n
  file({'app':'wrong-app'});expect(action('import-add')).to_be_hidden();assert count(download())==n
  file(baseline);expect(action('import-add')).to_be_visible();action('import-cancel').click();expect(action('import-add')).to_be_hidden();assert count(download())==n
  file(baseline);expect(action('import-add')).to_be_visible();accept[0]=False;action('import-replace').click();assert count(download())==n;accept[0]=True
