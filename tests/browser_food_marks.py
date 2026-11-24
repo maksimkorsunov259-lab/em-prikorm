@@ -12,7 +12,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  page.locator('[name=reviewNote]').fill('Врач: связь с треской исключена. <img src=x onerror=alert(1)>')
  page.locator('[data-go=help]').first.click();expect(page.locator('#family-help')).to_be_visible();page.locator('#family-help [data-family-about-close]').click();assert 'связь с треской исключена' in page.locator('[name=reviewNote]').input_value()
  page.locator('#food-review-form [type=submit]').click();page.wait_for_function('!pendingWrites');expect(page.locator('.food-status-detail .food-mark')).to_have_text('✓');assert page.evaluate('JSON.stringify(p.symptoms)')==original
- assert 'не реже одного раза в неделю' in page.locator('#screen').inner_text();assert page.locator('#screen img[src=x]').count()==0
+ assert 'без отметки в дневнике' in page.locator('#screen').inner_text();assert 'не реже одного раза в неделю' not in page.locator('#screen').inner_text();assert page.locator('#screen img[src=x]').count()==0
  page.evaluate("render('foods')");expect(page.locator('[data-food=cod] .food-mark')).to_have_text('✓');expect(page.locator('[data-food=pistachio] .food-mark')).to_have_text('!')
  for width in [320,390,1440]:
   page.set_viewport_size({'width':width,'height':900});assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')

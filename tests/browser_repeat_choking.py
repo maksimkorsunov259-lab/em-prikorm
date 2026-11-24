@@ -12,6 +12,7 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
   cb=close.bounding_box();db=dialog.bounding_box();assert cb['x']+cb['width']/2>db['x']+db['width']/2;assert 15<=db['x']+db['width']-cb['x']-cb['width']<=23;assert cb['y']<db['y']+35
   assert cb['y']+cb['height']<=dialog.locator('h2').bounding_box()['y']
   assert dialog.locator('a[href="tel:112"]').count()==1
+  assert dialog.get_by_role('link',name='Алгоритм помощи',exact=False).get_attribute('href')==page.evaluate("SPEC.sources.find(source=>source.id==='S21').url")
   dialog.evaluate('e=>e.scrollTop=e.scrollHeight');cb=close.bounding_box();assert cb['y']<db['y']+35
   close.click();expect(dialog).not_to_be_visible();expect(trigger).to_be_focused();assert page.locator('[name=name]').input_value()=='Несохранённое имя'
   trigger.click();page.keyboard.press('Escape');expect(dialog).not_to_be_visible()
@@ -21,7 +22,8 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  page.evaluate("""()=>{p.dob=before(270);Object.keys(p.risks).forEach(k=>p.risks[k]='no');const now=new Date().toISOString();p.meals=[['beef',8],['apple',7],['pear',6],['cod',9],['chicken',8],['honey',8],['peas',10],['lentils',12],['turkey',11],['milk',15]].map(([id,days])=>({id:'meal-'+id,date:before(days),time:'12:00',createdAt:now,updatedAt:now,kind:'eaten',foodIds:[id],unknown:false,dish:'',amount:'',texture:'',result:id==='milk'?'pending':'none',note:''}));p.symptoms=[{id:'symptom',date:before(9),time:'13:00',createdAt:now,updatedAt:now,codes:['local'],onset:'soon',mealId:'meal-cod',note:'',photo:null}];p.doctorFoods=[{foodId:'chicken',status:'avoid',note:'Не предлагать'}];render('today');}""")
  assert page.evaluate('foodsToRepeat().map(f=>f.id)')==['lentils','turkey','peas','beef']
  card=page.locator('.repeat-foods');expect(card).to_be_visible();assert card.locator('[data-repeat-food]').count()==4;assert card.locator('[data-repeat-food]:visible').count()==3
- assert 'гарантирующая профилактику аллергии, неизвестна' in card.inner_text()
+ assert 'Список составлен по датам записей' in card.inner_text()
+ assert 'не реже одного раза в неделю' not in card.inner_text()
  for width in [320,390,1440]:
   page.set_viewport_size({'width':width,'height':900});assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
  card.locator('summary').click();card.locator('[data-record-food=beef]').click();expect(page.locator('[name=foodIds][value=beef]')).to_be_checked();page.locator('[name=result]').select_option('none');page.locator('#meal-form [type=submit]').click();page.wait_for_function('!pendingWrites');page.locator('.nav [data-go=today]').click();assert page.locator('[data-repeat-food=beef]').count()==0
