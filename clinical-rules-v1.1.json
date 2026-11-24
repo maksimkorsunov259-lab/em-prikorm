@@ -154,7 +154,8 @@
       "short": "RCUK · если ребёнок подавился",
       "citation": "Resuscitation Council UK. Paediatric choking algorithm. Guidelines 2025.",
       "url": "https://www.resus.org.uk/sites/default/files/2025-10/Paediatric%20choking%20algorithm%202025.pdf",
-      "note": "Схема на английском языке различает эффективный и неэффективный кашель, помощь младенцу и ребёнку старше года. В приложении указаны экстренные номера для России."
+      "note": "Оригинальная схема RCUK на английском. Русская памятка адаптирована для родителей, с отдельными действиями для младенца и ребёнка от года и номерами экстренной помощи в России.",
+      "russianHandout": "./assets/choking-ru.pdf"
     },
     {
       "id": "S22",

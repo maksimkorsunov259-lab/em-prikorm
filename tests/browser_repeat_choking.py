@@ -13,6 +13,12 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
   assert cb['y']+cb['height']<=dialog.locator('h2').bounding_box()['y']
   assert dialog.locator('a[href="tel:112"]').count()==1
   assert dialog.get_by_role('link',name='Алгоритм помощи',exact=False).get_attribute('href')==page.evaluate("SPEC.sources.find(source=>source.id==='S21').url")
+  guide=dialog.locator('.choking-guide')
+  assert guide.get_by_role('heading',name='Младенец до 1 года').count()==1
+  assert guide.get_by_role('heading',name='Ребёнок от 1 года').count()==1
+  jump=guide.locator('.choking-jump a')
+  jump.click()
+  expect(guide.locator(jump.get_attribute('href'))).to_be_in_viewport()
   dialog.evaluate('e=>e.scrollTop=e.scrollHeight');cb=close.bounding_box();assert cb['y']<db['y']+35
   close.click();expect(dialog).not_to_be_visible();expect(trigger).to_be_focused();assert page.locator('[name=name]').input_value()=='Несохранённое имя'
   trigger.click();page.keyboard.press('Escape');expect(dialog).not_to_be_visible()
@@ -31,6 +37,10 @@ with sync_playwright() as pw,tempfile.TemporaryDirectory() as tmp:
  page.evaluate("p.meals.find(m=>m.id==='meal-peas').result='pending';render('today')");assert page.locator('[data-repeat-food=peas]').count()==0
  page.evaluate("p.doctorFoods.push({foodId:'turkey',status:'individual',note:'По индивидуальному плану'});render('today')");assert page.locator('[data-repeat-food=turkey]').count()==0
  page.evaluate("profiles.push(PrikormModel.patient('Другой'));active=1;p=profiles[1];render('today')");expect(card).to_have_count(0)
- page.evaluate("active=0;p=profiles[0];render('today')");page.wait_for_function('!pendingWrites');page.evaluate('navigator.serviceWorker.ready');c.set_offline(True);page.reload();page.wait_for_function('!loading');expect(page.locator('[data-repeat-food=lentils]')).to_be_visible();page.locator('[data-action=choking-help]').click();expect(page.locator('#triage-dialog.choking-help')).to_be_visible();close.click()
+ page.evaluate("active=0;p=profiles[0];render('today')");page.wait_for_function('!pendingWrites');page.evaluate('navigator.serviceWorker.ready');c.set_offline(True);page.reload();page.wait_for_function('!loading');expect(page.locator('[data-repeat-food=lentils]')).to_be_visible();page.locator('[data-action=choking-help]').click();expect(page.locator('#triage-dialog.choking-help')).to_be_visible()
+ pdf=dialog.get_by_role('link',name='Памятка на русском')
+ assert pdf.evaluate('async a=>{const response=await fetch(a.href);return response.ok && (await response.text()).startsWith("%PDF-")}')
+ assert '5 начальных спасательных вдохов' in dialog.locator('.choking-guide').inner_text()
+ close.click()
  assert not errors,errors;c.close()
 print('PASS: choking return upper-right/sticky, button/Escape/focus/draft preservation, urgent triage unchanged; >7-day boundary, conditions, oldest-first/collapsed list, recording resets reminder, patient isolation, responsive and offline.')

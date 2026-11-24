@@ -46,3 +46,21 @@ body{background:#f8f5ed}.layout{display:block;max-width:600px;padding:20px 12px;
 .report-allergens th,.report-allergens td{overflow-wrap:anywhere;vertical-align:top;text-align:left}
 .report-allergens th:first-child{width:48%}.report-allergens th[scope=row]{font-weight:600}
 .report-foods{display:block;margin-top:5px;font-weight:400;line-height:1.5}
+
+.choking-guide {line-height:1.5; color:var(--ink)}
+.choking-guide h3, .choking-guide h4 {margin:0 0 .4em; line-height:1.25}
+.choking-guide h3 {font-size:1.16rem}
+.choking-guide h4 {font-size:1.04rem}
+.choking-guide p {margin:.45em 0}
+.choking-guide > section {margin:1em 0}
+.choking-call, .choking-unconscious {padding:14px; border-left:4px solid var(--red); background:var(--red-bg); border-radius:8px}
+.choking-phones a {font-size:1.25em; font-weight:700; color:var(--red)}
+.choking-phones span {display:block; font-size:.86em}
+.choking-ages {display:grid; gap:10px; margin:10px 0}
+.choking-ages > section {padding:12px; border:1px solid var(--line); border-radius:10px; background:var(--white)}
+.choking-ages ol {padding-left:1.5em; margin:0}
+.choking-ages li + li {margin-top:.5em}
+.choking-source {font-size:.9em}
+.choking-files {display:grid; gap:4px}
+.choking-files a {padding:8px 0}
+.choking-unconscious {scroll-margin-top:72px}
